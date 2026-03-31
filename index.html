@@ -146,7 +146,7 @@
         }
         .hero-right img {
             width: 100%;
-            border-radius: 12px;
+            border-radius: 0; /* Bordes cuadrados */
             border: 1px solid var(--rojo-racing);
             box-shadow: 0 15px 30px rgba(0,0,0,0.6);
         }
@@ -382,7 +382,7 @@
             gap: 1.5rem;
         }
 
-        /* ESTILOS PARA LOS PASOS (separación entre texto e ícono) */
+        /* PASOS (separación texto-ícono) */
         .steps {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -412,12 +412,12 @@
             color: #bbb;
             font-family: 'Segoe UI', Roboto, sans-serif;
             text-transform: none;
-            margin-bottom: 0.75rem; /* separación del texto con el ícono */
+            margin-bottom: 0.75rem;
         }
         .step i {
             font-size: 1.8rem;
             color: var(--rojo-racing);
-            margin-top: 0.5rem; /* espacio adicional respecto al párrafo */
+            margin-top: 0.5rem;
         }
 
         /* ADAPTABLE DOS COLUMNAS */
@@ -502,7 +502,7 @@
             margin: 2rem 0 1rem;
         }
 
-        /* ===== RESPONSIVE MÓVIL: CENTRADO Y SIN BORDES PEGADOS ===== */
+        /* ===== RESPONSIVE MÓVIL: CENTRADO Y SEPARACIÓN HEADER ===== */
         @media (max-width: 768px) {
             body {
                 overflow-x: hidden;
@@ -510,6 +510,21 @@
             .container {
                 width: 100%;
                 padding: 0 1rem;
+            }
+            /* Header: mayor separación entre logo y enlaces */
+            .nav-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.2rem;
+            }
+            .logo-link {
+                margin-bottom: 0.3rem;
+            }
+            .nav-links {
+                justify-content: center;
+                gap: 1.2rem;
+                width: 100%;
+                flex-wrap: wrap;
             }
             .hero-grid {
                 flex-direction: column;
@@ -663,7 +678,7 @@
                 <div class="hero-left">
                     <div class="hero-text">
                         <h1>
-                            <img src="logo.png" alt="Parke52" class="hero-title-img"><br>
+                            <img src="logosinfondo.png" alt="Parke52" class="hero-title-img"><br>
                             LA PLATAFORMA QUE MODERNIZA LA EXPERIENCIA COMPLETA DE TU PARQUE DE DIVERSIONES
                         </h1>
                         <div class="hero-sub-container">
@@ -794,7 +809,7 @@
 
         <div class="checker-divider"></div>
 
-        <!-- RECORRIDO (PASOS) con separación entre texto e ícono -->
+        <!-- RECORRIDO (PASOS) -->
         <section id="recorrido">
             <div class="container">
                 <div class="title-wrapper">
