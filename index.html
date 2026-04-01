@@ -22,6 +22,10 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth; /* fallback, pero usaremos JS para offset */
+        }
+
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--negro);
@@ -46,6 +50,7 @@
             font-weight: bold;
         }
 
+        /* HEADER: SIEMPRE VISIBLE, ESTÁTICO EN LA PARTE SUPERIOR */
         .header {
             position: sticky;
             top: 0;
@@ -53,10 +58,7 @@
             background: rgba(0,0,0,0.95);
             border-bottom: 3px solid var(--rojo-racing);
             padding: 15px 5%;
-            transition: transform 0.3s ease;
-        }
-        .header-hidden {
-            transform: translateY(-100%);
+            transition: none;
         }
         .nav-container {
             display: flex;
@@ -141,11 +143,20 @@
         .hero-right {
             flex: 0.9;
         }
+        /* ANIMACIÓN EN IMAGEN DEL HÉROE */
         .hero-right img {
             width: 100%;
-            border-radius: 0; /* Bordes cuadrados */
+            border-radius: 0;
             border: 1px solid var(--rojo-racing);
             box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+            transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1), filter 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform;
+        }
+        .hero-right img:hover {
+            transform: scale(1.02) translateY(-6px);
+            filter: brightness(1.08) contrast(1.02);
+            box-shadow: 0 22px 40px rgba(227,30,36,0.25);
+            border-color: var(--rojo-racing);
         }
         .hero h1 {
             font-size: 3rem;
@@ -194,7 +205,11 @@
             padding: 0.7rem 1rem;
             text-align: center;
             width: 100px;
-            transition: 0.2s;
+            transition: transform 0.25s ease, background 0.2s;
+        }
+        .badge-icon:hover {
+            transform: translateY(-4px);
+            background: #222;
         }
         .badge-icon i {
             font-size: 2rem;
@@ -205,10 +220,6 @@
             font-size: 0.7rem;
             font-weight: 600;
             color: #ccc;
-        }
-        .badge-icon:hover {
-            transform: translateY(-4px);
-            background: #222;
         }
 
         /* DIVISOR */
@@ -267,17 +278,20 @@
             text-transform: none;
         }
 
-        /* CARDS */
+        /* CARDS - ANIMACIONES GLOBALES */
         .card-value, .tech-card, .step, .carousel-card {
             background: var(--gris-card);
             border-left: 5px solid var(--rojo-racing);
             padding: 1.8rem;
-            transition: 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             height: 100%;
+            will-change: transform;
         }
         .card-value:hover, .tech-card:hover, .step:hover, .carousel-card:hover {
             background: #252525;
-            transform: translateY(-5px);
+            transform: translateY(-7px);
+            box-shadow: 0 12px 25px rgba(227,30,36,0.2);
+            border-left-width: 6px;
         }
         .grid-4, .grid-benefits {
             display: grid;
@@ -379,7 +393,7 @@
             gap: 1.5rem;
         }
 
-        /* PASOS (separación texto-ícono) */
+        /* PASOS */
         .steps {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -454,6 +468,16 @@
             border-left: 3px solid var(--rojo-racing);
             font-size: 0.85rem;
             font-family: 'Oswald', Impact, sans-serif;
+            transition: all 0.25s ease-in-out;
+            cursor: default;
+            will-change: transform;
+        }
+        .badge-type:hover {
+            transform: translateY(-4px) scale(1.02);
+            background: var(--rojo-racing);
+            color: white;
+            border-left-color: white;
+            box-shadow: 0 5px 12px rgba(227,30,36,0.4);
         }
 
         /* FOOTER */
@@ -499,7 +523,7 @@
             margin: 2rem 0 1rem;
         }
 
-        /* ===== RESPONSIVE MÓVIL: CENTRADO Y SEPARACIÓN HEADER ===== */
+        /* ===== RESPONSIVE MÓVIL ===== */
         @media (max-width: 768px) {
             body {
                 overflow-x: hidden;
@@ -508,7 +532,6 @@
                 width: 100%;
                 padding: 0 1rem;
             }
-            /* Header: mayor separación entre logo y enlaces */
             .nav-container {
                 flex-direction: column;
                 align-items: center;
@@ -916,21 +939,26 @@
     </main>
 
     <script>
-        // Header auto-hide
-        let lastScrollTop = 0;
-        const header = document.getElementById('main-header');
-        const scrollThreshold = 50;
-        window.addEventListener('scroll', () => {
-            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-            if (currentScroll > lastScrollTop && currentScroll > scrollThreshold) {
-                header.classList.add('header-hidden');
-            } else if (currentScroll < lastScrollTop || currentScroll <= 10) {
-                header.classList.remove('header-hidden');
-            }
-            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+        // Smooth scroll con offset para header fijo
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                // Si es solo "#" o está vacío, no hacer nada
+                if (targetId === '#' || targetId === '') return;
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    e.preventDefault();
+                    const headerHeight = document.querySelector('.header').offsetHeight;
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
         });
 
-        // Carrusel
+        // Carrusel (sin interferencia)
         const modules = [
             { icon: "fas fa-tablet-alt", title: "KIOSKOS DE AUTOPAGO", text: "Consulta de cuenta, recarga de créditos y pago rápido de forma autónoma." },
             { icon: "fas fa-store", title: "VENTA ASISTIDA EN TAQUILLA", text: "Herramienta ágil para vender, recargar y asociar tarjetas con soporte en sitio." },
